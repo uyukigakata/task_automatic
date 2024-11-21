@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  name           String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  tasks          Task[]
+  calendarEvents CalendarEvent[]
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  completed   Boolean   @default(false)
+  dueDate     DateTime?
+  priority    String    @default("normal")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  tags        TaskTag[] @relation("TaskTags")
+  File        File[]
+}
+
+model CalendarEvent {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  tags        EventTag[] @relation("EventTags")
+  File        File[]
+}
+
+model Tag {
+  id             Int        @id @default(autoincrement())
+  name           String     @unique
+  tasks          TaskTag[]  @relation("TaskTags")
+  calendarEvents EventTag[] @relation("EventTags")
+}
+
+model TaskTag {
+  taskId Int
+  tagId  Int
+  task   Task @relation("TaskTags", fields: [taskId], references: [id])
+  tag    Tag  @relation("TaskTags", fields: [tagId], references: [id])
+
+  @@id([taskId, tagId])
+}
+
+model EventTag {
+  eventId Int
+  tagId   Int
+  event   CalendarEvent @relation("EventTags", fields: [eventId], references: [id])
+  tag     Tag           @relation("EventTags", fields: [tagId], references: [id])
+
+  @@id([eventId, tagId])
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  provider          String
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         Int?
+  user              User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model File {
+  id         Int            @id @default(autoincrement())
+  url        String
+  uploadedAt DateTime       @default(now())
+  taskId     Int?
+  task       Task?          @relation(fields: [taskId], references: [id])
+  eventId    Int?
+  event      CalendarEvent? @relation(fields: [eventId], references: [id])
+}
