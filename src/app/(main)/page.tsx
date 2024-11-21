@@ -1,9 +1,12 @@
 import React from 'react'
 
-const page = () => {
+export default function Home (){
   return (
-    <div>page</div>
+    <div>
+      <div>
+        <h1>TASKを自動化しよ!!</h1>
+      </div>
+    </div>
   )
 }
 
-export default page
