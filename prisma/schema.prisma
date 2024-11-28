@@ -4,107 +4,73 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model User {
-  id             Int             @id @default(autoincrement())
-  email          String          @unique
-  name           String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  tasks          Task[]
-  calendarEvents CalendarEvent[]
-  accounts       Account[]
-  sessions       Session[]
-}
-
-model Task {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  completed   Boolean   @default(false)
-  dueDate     DateTime?
-  priority    String    @default("normal")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  tags        TaskTag[] @relation("TaskTags")
-  File        File[]
-}
-
-model CalendarEvent {
-  id          Int        @id @default(autoincrement())
-  title       String
-  description String?
-  startTime   DateTime
-  endTime     DateTime
-  location    String?
-  userId      Int
-  user        User       @relation(fields: [userId], references: [id])
-  tags        EventTag[] @relation("EventTags")
-  File        File[]
-}
-
-model Tag {
-  id             Int        @id @default(autoincrement())
-  name           String     @unique
-  tasks          TaskTag[]  @relation("TaskTags")
-  calendarEvents EventTag[] @relation("EventTags")
-}
-
-model TaskTag {
-  taskId Int
-  tagId  Int
-  task   Task @relation("TaskTags", fields: [taskId], references: [id])
-  tag    Tag  @relation("TaskTags", fields: [tagId], references: [id])
-
-  @@id([taskId, tagId])
-}
-
-model EventTag {
-  eventId Int
-  tagId   Int
-  event   CalendarEvent @relation("EventTags", fields: [eventId], references: [id])
-  tag     Tag           @relation("EventTags", fields: [tagId], references: [id])
-
-  @@id([eventId, tagId])
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  todos         Todo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                Int     @id @default(autoincrement())
-  userId            Int
+  userId            String
+  type              String
   provider          String
   providerAccountId String
-  accessToken       String?
-  refreshToken      String?
-  expiresAt         Int?
-  user              User    @relation(fields: [userId], references: [id])
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
-  @@unique([provider, providerAccountId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model File {
-  id         Int            @id @default(autoincrement())
-  url        String
-  uploadedAt DateTime       @default(now())
-  taskId     Int?
-  task       Task?          @relation(fields: [taskId], references: [id])
-  eventId    Int?
-  event      CalendarEvent? @relation(fields: [eventId], references: [id])
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement()) // 自動インクリメントの一意なID
+  title     String   // Todoのタイトル
+  completed Boolean  @default(false) // 完了フラグ（デフォルトはfalse）
+  userId    String   // リレーションに使用するユーザーID
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // ユーザーとのリレーション
+  createdAt DateTime @default(now()) // 作成日時
+  updatedAt DateTime @updatedAt      // 更新日時
 }
