@@ -15,7 +15,7 @@ export default function Home() {
     return (
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
         <p>Signed in as <strong>{session.user.email}</strong></p>
-        <button onClick={() => signOut()} style={buttonStyle}>
+        <button onClick={() => signOut()} >
           Sign out
         </button>
       </div>
@@ -26,19 +26,9 @@ export default function Home() {
   return (
     <div style={{ textAlign: 'center', marginTop: '2rem' }}>
       <p>Not signed in</p>
-      <button onClick={() => signIn()} style={buttonStyle}>
+      <button onClick={() => signIn()} >
         Sign in
       </button>
     </div>
   );
 }
-
-// ボタンのスタイルを統一
-const buttonStyle: React.CSSProperties = {
-  padding: '10px 20px',
-  backgroundColor: '#0070f3',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-};
