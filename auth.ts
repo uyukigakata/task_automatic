@@ -23,11 +23,10 @@ export const { handlers, auth } = NextAuth({
             },
             async session({ session, token }) {
             // トークンからユーザーIDをセッションに追加
-            if (token.sub && session.user) {
-                session.user.id = token.sub;
+            if (token && session.user) {
+                session.user.id = token.id as string;
             }
             return session;
         },
     },
 });
-
