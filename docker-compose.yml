@@ -11,7 +11,8 @@ services:
       CHOKIDAR_USEPOLLING: true
       NEXT_DEV_PORT: 3000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/node_modules
@@ -19,7 +20,6 @@ services:
 
   db:
     image: postgres:17
-    restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -28,6 +28,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin", "-d", "taskautomatic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
