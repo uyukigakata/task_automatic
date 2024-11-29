@@ -8,10 +8,12 @@ services:
       - "5555:5555" # Prisma Studio用のポートを公開
     environment:
       DATABASE_URL: "postgresql://admin:password@db:5432/taskautomatic"
+      CHOKIDAR_USEPOLLING: true
+      NEXT_DEV_PORT: 3000
     depends_on:
       - db
     volumes:
-      - .:/app
+      - .:/app:cached
       - /app/node_modules
     command: npm run dev
 
