@@ -52,14 +52,14 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Todo" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "details" TEXT,
-    "date" TIMESTAMP(3) NOT NULL,
-    "startTime" TIMESTAMP(3),
-    "endTime" TIMESTAMP(3),
-    "isComplete" BOOLEAN NOT NULL DEFAULT false,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "details" TEXT,
+    "endTime" TIMESTAMP(3),
+    "isComplete" BOOLEAN NOT NULL DEFAULT false,
+    "startTime" TIMESTAMP(3),
 
     CONSTRAINT "Todo_pkey" PRIMARY KEY ("id")
 );

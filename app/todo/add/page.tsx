@@ -18,23 +18,25 @@ export default function AddTodoPage() {
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
-
-        const response = await fetch('/api/todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            ...form,
-            userId: 'your-user-id', // 本番では認証ユーザーIDを動的に取得
-        }),
+    
+        const response = await fetch('/api/todo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...form,
+                startTime: form.startTime ? `${form.date}T${form.startTime}:00` : null,
+                endTime: form.endTime ? `${form.date}T${form.endTime}:00` : null,
+                userId: 'your-user-id', // 本番では認証ユーザーIDを動的に取得
+            }),
         });
-
+    
         if (response.ok) {
-        alert('Todo added successfully');
-        router.push('/todo'); // 作成後にTodo一覧ページへリダイレクト
+            alert('Todo added successfully');
+            router.push('/todo');
         } else {
-        alert('Failed to add Todo');
+            alert('Failed to add Todo');
         }
-
+    
         setIsSubmitting(false);
     };
 

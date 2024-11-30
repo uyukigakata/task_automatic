@@ -6,38 +6,34 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
-    // 認証ユーザーを取得
-    const user = await getAuthenticatedUser();
+      const user = await getAuthenticatedUser();
 
-    if (!user) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+      if (!user) {
+          return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+      }
 
-    // リクエストボディを解析
-    const body = await request.json();
-    const { title, details, date, startTime, endTime } = body;
+      const body = await request.json();
+      const { title, details, date, startTime, endTime } = body;
 
-    // バリデーション
-    if (!title || !date) {
-      return NextResponse.json({ error: "タイトルと日付は必須です" }, { status: 400 });
-    }
+      if (!title || !date) {
+          return NextResponse.json({ error: "タイトルと日付は必須です" }, { status: 400 });
+      }
 
-    // Todoを作成
-    const todo = await prisma.todo.create({
-      data: {
-        title,
-        details,
-        date: new Date(date),
-        startTime: startTime ? new Date(startTime) : null,
-        endTime: endTime ? new Date(endTime) : null,
-        userId: user.id,
-      },
-    });
+      const todo = await prisma.todo.create({
+          data: {
+              title,
+              details,
+              date: new Date(date),
+              startTime: startTime ? new Date(startTime) : null,
+              endTime: endTime ? new Date(endTime) : null,
+              userId: user.id,
+          },
+      });
 
-    return NextResponse.json(todo, { status: 201 });
+      return NextResponse.json(todo, { status: 201 });
   } catch (error) {
-    console.error("Error creating Todo:", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+      console.error("Error creating Todo:", error);
+      return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
   }
 }
 
