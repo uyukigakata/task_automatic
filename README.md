@@ -2,20 +2,20 @@
 
 ***
 
-## 初めに
+### 初めに
 ```
 npm i
 ```
-## Next.jsの起動！
+### Next.jsの起動！
 ```
 npm run dev
 ```
-## Prismaが認識しない^_^A
+### Prismaが認識しない^_^A
 ```
 npx prisma generate
 ```
-## Prisma見たいぜ！
+### Prisma見たいぜ！
 ```
 npx prisma studio
 ```
-### もし、schema.prismaを変更したら、kaiyuskisまでお声がけください。
+###### もし、schema.prismaを変更したら、kaiyuskisまでお声がけください。
