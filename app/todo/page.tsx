@@ -18,11 +18,11 @@ export default function TodoPage() {
 
     useEffect(() => {
         const fetchTodos = async () => {
-        const date = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD形式
-        const response = await fetch(`/api/todo?date=${date}`);
-        if (response.ok) {
-            setTodos(await response.json());
-        }
+            const date = currentDate.toLocaleDateString('en-CA'); // YYYY-MM-DD形式
+            const response = await fetch(`/api/todo?date=${date}`);
+            if (response.ok) {
+                setTodos(await response.json());
+            }
         };
         fetchTodos();
     }, [currentDate]);

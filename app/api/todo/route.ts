@@ -53,8 +53,9 @@ export async function GET(request: Request) {
     let todos;
     if (date) {
       // 特定の日付のTodoを取得
-      const startOfDay = new Date(date);
-      const endOfDay = new Date(date);
+      const startOfDay = new Date(`${date}T00:00:00`);
+      const endOfDay = new Date(`${date}T23:59:59`);
+
       endOfDay.setDate(startOfDay.getDate() + 1);
 
       todos = await prisma.todo.findMany({

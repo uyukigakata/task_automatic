@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function AddTodoPage() {
     const router = useRouter();
+    const { data: session } = useSession();
 
     const [form, setForm] = useState({
         title: '',
@@ -17,6 +19,18 @@ export default function AddTodoPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async () => {
+        if (!session) {
+            alert('ログインが必要です');
+            return;
+        }
+
+        const userId = session.user?.id;
+
+        if (!userId) {
+            alert('ユーザー情報が取得できませんでした');
+            return;
+        }
+
         setIsSubmitting(true);
     
         const response = await fetch('/api/todo', {
@@ -26,15 +40,15 @@ export default function AddTodoPage() {
                 ...form,
                 startTime: form.startTime ? `${form.date}T${form.startTime}:00` : null,
                 endTime: form.endTime ? `${form.date}T${form.endTime}:00` : null,
-                userId: 'your-user-id', // 本番では認証ユーザーIDを動的に取得
+                userId,
             }),
         });
     
         if (response.ok) {
-            alert('Todo added successfully');
+            alert('新しいTodoを追加しました');
             router.push('/todo');
         } else {
-            alert('Failed to add Todo');
+            alert('タイトルと日付は必須です');
         }
     
         setIsSubmitting(false);
