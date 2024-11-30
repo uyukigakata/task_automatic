@@ -59,7 +59,7 @@ model VerificationToken {
 }
 
 model Todo {
-  id         String    @id @default(cuid())
+  id         String    @id @default(uuid())
   title      String
   details    String?
   date       DateTime

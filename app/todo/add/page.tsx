@@ -26,11 +26,6 @@ export default function AddTodoPage() {
 
         const userId = session.user?.id;
 
-        if (!userId) {
-            alert('ユーザー情報が取得できませんでした');
-            return;
-        }
-
         setIsSubmitting(true);
     
         const response = await fetch('/api/todo', {
