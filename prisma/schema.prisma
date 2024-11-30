@@ -24,7 +24,19 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(uuid())
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  todos         Todo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
   userId            String
   type              String
   provider          String
@@ -36,7 +48,39 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement()) // 自動インクリメントの一意なID
+  title     String   // Todoのタイトル
+  completed Boolean  @default(false) // 完了フラグ（デフォルトはfalse）
+  userId    String   // リレーションに使用するユーザーID
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // ユーザーとのリレーション
+  createdAt DateTime @default(now()) // 作成日時
+  updatedAt DateTime @updatedAt      // 更新日時
 }
