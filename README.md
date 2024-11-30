@@ -1,20 +1,18 @@
 # タスクの自動生成めざしてます
 
-***
-
-### 初めに
+## 初めに
 ```
 npm i
 ```
-### Next.jsの起動！
+## Next.jsの起動！
 ```
 npm run dev
 ```
-### Prismaが認識しない^_^A
+## Prismaが認識しない^_^A
 ```
 npx prisma generate
 ```
-### Prisma見たいぜ！
+## Prisma見たいぜ！
 ```
 npx prisma studio
 ```
