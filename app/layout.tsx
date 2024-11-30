@@ -8,7 +8,7 @@ import LoginModal from "@/app/components/modals/LoginModal";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "Task-Automatic",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const currentUser = await getCurrentUser()
+  const currentUser = await getCurrentUser();
   
   return (
     <html>
@@ -28,19 +28,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SignupModal />
           <LoginModal />
           <div className="flex min-h-screen flex-col">
-              <Navigation currentUser ={currentUser}/>
+            {/* 固定ナビゲーション */}
+            <Navigation currentUser={currentUser} />
 
-              <main className="container mx-auto max-w-screen-sm flex-1 px-1 py-5">{children}</main>
+            {/* Main */}
+            <main className="container mx-auto max-w-screen flex-1 px-1 py-5 pt-16">
+              {children}
+            </main>
 
-              <footer className="py-5">
-                <div className="text-center text-sm">
-                  Copyright © All rights reserved | Task-Automatic 
-      
-                </div>
-              </footer>
-            </div>
+            {/* Footer */}
+            <footer className="py-5">
+              <div className="text-center text-sm">
+                Copyright © All rights reserved | Task-Automatic
+              </div>
+            </footer>
+          </div>
         </AuthContext>
       </body>
     </html>
-  )
+  );
 }
+

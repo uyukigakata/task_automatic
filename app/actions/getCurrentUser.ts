@@ -1,4 +1,4 @@
-import { auth } from '@/auth'
+import { auth } from '@/app/lib/auth'
 import prisma from '@/app/lib/prisma'
 
 // ログインユーザー取得
