@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -21,22 +21,12 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   accounts       Account[]
+  sessions       Session[]
+  todos          Todo[]
 }
 
 model Account {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  todos         Todo[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Account {
+  id                String        @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -54,7 +44,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {

@@ -2,24 +2,17 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
       - "3000:3000"
       - "5555:5555" # Prisma Studio用のポートを公開
     environment:
-      DATABASE_URL: "postgresql://admin:password@db:5432/taskautomatic"
-      CHOKIDAR_USEPOLLING: true
-      NEXT_DEV_PORT: 3000
+      DATABASE_URL: "postgresql://admin:password@db:5432/taskautomatic?schema=public"
     depends_on:
-      - db
-    volumes:
-      - .:/app:cached
-      - /app/node_modules
-    command: npm run dev
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:17
-    restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -28,6 +21,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin", "-d", "taskautomatic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:

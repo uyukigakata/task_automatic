@@ -1,6 +1,0 @@
-services:
-  web:
-    volumes:
-      - .:/app:cached
-      - /app/node_modules
-    command: npm run dev
