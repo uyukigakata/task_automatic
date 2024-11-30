@@ -1,27 +1,31 @@
 services:
-  app:
+  web:
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+      - "5555:5555" # Prisma Studio用のポートを公開
+    environment:
+      DATABASE_URL: "postgresql://admin:password@db:5432/taskautomatics?schema=public"
     depends_on:
-      - db
-    volumes:
-      - .:/app
-      - /app/node_modules
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: taskautomatic
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin", "-d", "taskautomatic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  db-data:
+  postgres_data:
