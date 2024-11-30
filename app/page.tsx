@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+import React from 'react'
+import getCurrentUser from '@/app/actions/getCurrentUser'
+
+const Home = async () => {
+  const currentUser = await getCurrentUser()
+  return (
+    <div className='text-center'>
+      {
+        currentUser ? 
+        <div>認証中</div>: 
+        <div>未認証</div>}
+      
+    </div>
+  )
+}
+
+export default Home
+=======
 'use client';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -42,3 +61,4 @@ const buttonStyle: React.CSSProperties = {
   borderRadius: '5px',
   cursor: 'pointer',
 };
+>>>>>>> main
