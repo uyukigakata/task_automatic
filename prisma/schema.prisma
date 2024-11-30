@@ -34,11 +34,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -47,10 +45,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -62,11 +59,15 @@ model VerificationToken {
 }
 
 model Todo {
-  id        Int      @id @default(autoincrement()) // 自動インクリメントの一意なID
-  title     String   // Todoのタイトル
-  completed Boolean  @default(false) // 完了フラグ（デフォルトはfalse）
-  userId    String   // リレーションに使用するユーザーID
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // ユーザーとのリレーション
-  createdAt DateTime @default(now()) // 作成日時
-  updatedAt DateTime @updatedAt      // 更新日時
+  id         String    @id @default(cuid())
+  title      String
+  details    String?
+  date       DateTime
+  startTime  DateTime?
+  endTime    DateTime?
+  isComplete Boolean   @default(false)
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
