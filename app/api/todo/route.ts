@@ -1,87 +1,143 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { auth } from "@/auth"; // Auth.js用の認証関数をインポート
+import { getAuthenticatedUser } from "@/lib/auth-helpers";
 
-// Prismaクライアントを初期化
 const prisma = new PrismaClient();
 
-/**
- * POSTメソッド: 新しいTodoを作成（ユーザーに紐づける）
- */
 export async function POST(request: Request) {
   try {
-    // 認証情報を取得
-    const session = await auth();
+      const user = await getAuthenticatedUser();
 
-    // 認証されていない場合はエラーを返す
-    if (!session?.user || !session.user.email) {
-      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-    }
+      if (!user) {
+          return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+      }
 
-    // リクエストボディをJSON形式で解析
-    const body = await request.json();
-    const { title } = body;
+      const body = await request.json();
+      const { title, details, date, startTime, endTime } = body;
 
-    // タイトルが空の場合はエラーを返す
-    if (!title) {
-      return NextResponse.json({ error: "タイトルは必須です" }, { status: 400 });
-    }
+      if (!title || !date) {
+          return NextResponse.json({ error: "タイトルと日付は必須です" }, { status: 400 });
+      }
 
-    // ユーザーを取得
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
+      const todo = await prisma.todo.create({
+          data: {
+              title,
+              details,
+              date: new Date(date),
+              startTime: startTime ? new Date(startTime) : null,
+              endTime: endTime ? new Date(endTime) : null,
+              userId: user.id,
+          },
+      });
 
-    if (!user) {
-      return NextResponse.json({ error: "ユーザーが見つかりません" }, { status: 404 });
-    }
-
-    // 新しいTodoを作成
-    const todo = await prisma.todo.create({
-      data: {
-        title,
-        userId: user.id,
-      },
-    });
-
-    return NextResponse.json(todo, { status: 201 });
+      return NextResponse.json(todo, { status: 201 });
   } catch (error) {
-    console.error("Error creating Todo:", error);
-    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+      console.error("Error creating Todo:", error);
+      return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
   }
 }
 
-/**
- * GETメソッド: 認証されたユーザーのTodoを取得
- */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // 認証情報を取得
-    const session = await auth();
+    // 認証ユーザーを取得
+    const user = await getAuthenticatedUser();
 
-    // 認証されていない場合はエラーを返す
-    if (!session?.user || !session.user.email) {
+    if (!user) {
       return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
     }
 
-    // ユーザーを取得
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
+    // クエリパラメータから日付を取得
+    const { searchParams } = new URL(request.url);
+    const date = searchParams.get("date"); // YYYY-MM-DD形式
 
-    if (!user) {
-      return NextResponse.json({ error: "ユーザーが見つかりません" }, { status: 404 });
+    let todos;
+    if (date) {
+      // 特定の日付のTodoを取得
+      const startOfDay = new Date(`${date}T00:00:00`);
+      const endOfDay = new Date(`${date}T23:59:59`);
+
+      endOfDay.setDate(startOfDay.getDate() + 1);
+
+      todos = await prisma.todo.findMany({
+        where: {
+          userId: user.id,
+          date: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+        orderBy: { startTime: "asc" },
+      });
+    } else {
+      // 全てのTodoを取得
+      todos = await prisma.todo.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+      });
     }
-
-    // ユーザーのTodoリストを取得
-    const todos = await prisma.todo.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-    });
 
     return NextResponse.json(todos);
   } catch (error) {
     console.error("Error fetching Todos:", error);
+    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    // 認証ユーザーを取得
+    const user = await getAuthenticatedUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    // リクエストボディを解析
+    const body = await request.json();
+    const { id, isComplete } = body;
+
+    if (!id || typeof isComplete !== "boolean") {
+      return NextResponse.json({ error: "idとisCompleteは必須です" }, { status: 400 });
+    }
+
+    // Todoを更新
+    const todo = await prisma.todo.update({
+      where: { id },
+      data: { isComplete },
+    });
+
+    return NextResponse.json(todo);
+  } catch (error) {
+    console.error("Error updating Todo:", error);
+    return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    // 認証ユーザーを取得
+    const user = await getAuthenticatedUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+    }
+
+    // クエリパラメータからIDを取得
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "idは必須です" }, { status: 400 });
+    }
+
+    // Todoを削除
+    await prisma.todo.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Todoを削除しました" });
+  } catch (error) {
+    console.error("Error deleting Todo:", error);
     return NextResponse.json({ error: "サーバーエラーが発生しました" }, { status: 500 });
   }
 }
