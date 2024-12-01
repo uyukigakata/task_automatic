@@ -51,17 +51,17 @@ export default function AddTodoPage() {
 
     return (
         <div className="max-w-lg mx-auto p-4">
-        <h1 className="text-xl font-bold mb-4">Add a New Todo</h1>
+        <h1 className="text-xl font-bold mb-4">新しいTodoの追加</h1>
         <div className="space-y-4">
             <input
             type="text"
-            placeholder="Title"
+            placeholder="タイトル"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
             className="w-full border p-2 rounded"
             />
             <textarea
-            placeholder="Details"
+            placeholder="詳細"
             value={form.details}
             onChange={(e) => setForm({ ...form, details: e.target.value })}
             className="w-full border p-2 rounded"
@@ -75,14 +75,14 @@ export default function AddTodoPage() {
             <div className="flex space-x-2">
             <input
                 type="time"
-                placeholder="Start Time"
+                placeholder="開始時間"
                 value={form.startTime}
                 onChange={(e) => setForm({ ...form, startTime: e.target.value })}
                 className="w-1/2 border p-2 rounded"
             />
             <input
                 type="time"
-                placeholder="End Time"
+                placeholder="終了時間"
                 value={form.endTime}
                 onChange={(e) => setForm({ ...form, endTime: e.target.value })}
                 className="w-1/2 border p-2 rounded"
@@ -95,7 +95,7 @@ export default function AddTodoPage() {
                 isSubmitting ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-600'
             }`}
             >
-            {isSubmitting ? 'Submitting...' : 'Add Todo'}
+            {isSubmitting ? '送信中...' : 'Todoを追加'}
             </button>
         </div>
         </div>

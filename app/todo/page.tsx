@@ -83,7 +83,7 @@ export default function TodoPage() {
             <div className="bg-gray-200 py-2 px-4 fixed top-16 left-0 w-full z-10">
                 <div className="flex justify-between items-center">
                     <button
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-600 hover:underline"
                         onClick={() => setCurrentDate(addDays(currentDate, -7))}
                     >
                         前の週
@@ -94,8 +94,8 @@ export default function TodoPage() {
                                 key={date.toISOString()}
                                 className={`px-3 py-1 rounded ${
                                     format(date, 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-white text-blue-500 hover:bg-blue-100'
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-white text-blue-600 hover:bg-blue-100'
                                 }`}
                                 onClick={() => setCurrentDate(date)}
                             >
@@ -105,7 +105,7 @@ export default function TodoPage() {
                         ))}
                     </div>
                     <button
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-600 hover:underline"
                         onClick={() => setCurrentDate(addDays(currentDate, 7))}
                     >
                         次の週
@@ -182,7 +182,7 @@ export default function TodoPage() {
                                                     toggleComplete(todo.id, e.target.checked);
                                                 }}
                                                 onClick={(e) => e.stopPropagation()} // イベント伝播を防ぐ
-                                                className="w-6 h-6 cursor-pointer appearance-none border-2 border-gray-400 rounded-md checked:bg-blue-500 checked:border-blue-500 transition duration-200 ease-in-out"
+                                                className="w-6 h-6 cursor-pointer appearance-none border-2 border-gray-400 rounded-md checked:bg-blue-600 checked:border-blue-600 transition duration-200 ease-in-out"
                                             />
                                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                                 {todo.isComplete && (
@@ -227,19 +227,19 @@ export default function TodoPage() {
             <footer className="bg-white border-t border-gray-300 flex justify-between items-center p-4 fixed bottom-0 left-0 w-full z-10">
                 <button
                     onClick={() => setCurrentDate(addDays(currentDate, -1))}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-600 hover:underline"
                 >
                     前日
                 </button>
                 <button
                     onClick={() => window.location.href = '/todo/add'}
-                    className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+                    className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-800"
                 >
                     タスクを追加
                 </button>
                 <button
                     onClick={() => setCurrentDate(addDays(currentDate, 1))}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-600 hover:underline"
                 >
                     翌日
                 </button>

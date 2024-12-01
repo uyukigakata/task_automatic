@@ -10,7 +10,7 @@ const NavCalender = () => {
     <div className="flex items-center justify-center">
       <button
         onClick={() => router.push('/calendar')} // /calendarに遷移
-        className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
+        className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-800 transition"
         aria-label="カレンダーに移動"
       >
         <FiCalendar size={24} /> {/* カレンダーアイコン */}

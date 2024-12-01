@@ -13,13 +13,13 @@ type NavigationProps = {
 const Navigation: React.FC<NavigationProps> = ({ currentUser }) => {
     return (
         <header className="shadow-lg shadow-gray-100 bg-white fixed top-0 left-0 w-full h-16 z-20">
-        <div className="container mx-auto flex max-w-screen-sm items-center justify-between px-1 py-5">
-            <Link href="/" className="cursor-pointer text-xl font-bold">
-            Task-Automatic
+        <div className="container mx-auto flex max-w-screen-md items-center justify-between px-1 py-5">
+            <Link href="/todo" className="cursor-pointer text-xl font-bold">
+            TaskAutomatic -オートにできませんでした-
             </Link>
-            <NavCalender />
-            <div className="flex items-center justify-center space-x-2">
-            <Menu currentUser={currentUser} />
+            <div className="flex items-center justify-center space-x-3">
+                <NavCalender />
+                <Menu currentUser={currentUser} />
             </div>
         </div>
         </header>
