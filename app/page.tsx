@@ -10,7 +10,7 @@ const HomePage = async () => {
       {
         currentUser ? 
         <div>
-              <h1>カレンダーアプリ</h1>
+              
           <nav>
             <ul>
               <li>
