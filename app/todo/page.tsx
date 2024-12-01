@@ -8,8 +8,8 @@ interface Todo {
     id: string;
     title: string;
     isComplete: boolean;
-    startTime: string; // ISO形式
-    endTime: string;   // ISO形式
+    startTime: string;
+    endTime: string;
 }
 
 export default function TodoPage() {
@@ -56,11 +56,22 @@ export default function TodoPage() {
     };
     const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
     
-    const handleUpdate = (updatedTodo: Todo) => {
-        setTodos((prev) =>
-            prev.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
-        );
-    };
+    const handleUpdate = async (updatedTodo: Todo) => {
+        const response = await fetch('/api/todo', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedTodo),
+        });
+      
+        if (response.ok) {
+          const updatedData = await response.json();
+          setTodos((prev) =>
+            prev.map((todo) => (todo.id === updatedData.id ? updatedData : todo))
+          );
+        } else {
+          alert('タスクの更新に失敗しました');
+        }
+      };
 
     const handleDelete = (id: string) => {
         setTodos((prev) => prev.filter((todo) => todo.id !== id));
@@ -116,8 +127,8 @@ export default function TodoPage() {
                     {/* タスクリスト */}
                     <div className="flex-1 ml-2 relative bg-white shadow-md rounded-md p-2">
                         {todos.map((todo, index) => {
-                            const start = new Date(todo.startTime);
-                            const end = new Date(todo.endTime);
+                            const start = new Date(todo.startTime || '1970-01-01T00:00:00');
+                            const end = new Date(todo.endTime || '1970-01-01T00:00:00');
                             const startHours = start.getHours() + start.getMinutes() / 60;
                             const endHours = end.getHours() + end.getMinutes() / 60;
 
