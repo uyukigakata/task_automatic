@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
+import TaskModal from '@/app/components/modals/TaskModal';
 
 interface Todo {
     id: string;
@@ -52,6 +53,17 @@ export default function TodoPage() {
         setTodos((prev) =>
             prev.map((todo) => (todo.id === id ? { ...todo, isComplete } : todo))
         );
+    };
+    const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+    
+    const handleUpdate = (updatedTodo: Todo) => {
+        setTodos((prev) =>
+            prev.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+        );
+    };
+
+    const handleDelete = (id: string) => {
+        setTodos((prev) => prev.filter((todo) => todo.id !== id));
     };
 
     return (
@@ -147,6 +159,7 @@ export default function TodoPage() {
                                         left: left,
                                         width: width,
                                     }}
+                                    onClick={() => setSelectedTodo(todo)}
                                 >
                                     <div className="flex justify-between items-center">
                                         <div className="font-bold">
@@ -188,10 +201,17 @@ export default function TodoPage() {
                             );
                         })}
                     </div>
+                    {/* モーダル */}
+                    {selectedTodo && (
+                        <TaskModal
+                            todo={selectedTodo}
+                            onClose={() => setSelectedTodo(null)}
+                            onUpdate={handleUpdate}
+                            onDelete={handleDelete}
+                        />
+                    )}
                 </div>
             </div>
-
-
 
             {/* フッター */}
             <footer className="bg-white border-t border-gray-300 flex justify-between items-center p-4 fixed bottom-0 left-0 w-full z-10">
