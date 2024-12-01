@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./styles/globals.css";
-
 import Navigation from "./components/navigation/Navigation";
 import AuthContext from "./context/AuthContext";
 import ToasterContext from "@/app/context/ToasterContext";
@@ -9,7 +8,6 @@ import LoginModal from "@/app/components/modals/LoginModal";
 import ProfileModal from "@/app/components/modals/ProfileModal";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { Inter } from "next/font/google";
-
 
 const inter = Inter({ subsets: ['latin'] })
 

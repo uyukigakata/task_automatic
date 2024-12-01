@@ -52,10 +52,14 @@ CREATE TABLE "VerificationToken" (
 
 -- CreateTable
 CREATE TABLE "Todo" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "completed" BOOLEAN NOT NULL DEFAULT false,
-    "userId" TEXT NOT NULL,
+    "details" TEXT,
+    "date" TIMESTAMP(3) NOT NULL,
+    "startTime" TIMESTAMP(3),
+    "endTime" TIMESTAMP(3),
+    "isComplete" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
