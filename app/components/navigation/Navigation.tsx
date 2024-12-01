@@ -4,6 +4,7 @@ import { User } from '@prisma/client'
 
 import Menu from '@/app/components/navigation/Menu'
 import Link from 'next/link'
+import NavCalender from './NavCalender'
 
 type NavigationProps = {
     currentUser: User | null
@@ -16,7 +17,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentUser }) => {
             <Link href="/" className="cursor-pointer text-xl font-bold">
             Task-Automatic
             </Link>
-
+            <NavCalender />
             <div className="flex items-center justify-center space-x-2">
             <Menu currentUser={currentUser} />
             </div>

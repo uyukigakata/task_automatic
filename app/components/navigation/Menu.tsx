@@ -10,6 +10,7 @@ import useProfileModal from '@/app/hooks/useProfileModal'
 import MenuItem from '@/app/components/navigation/MenuItem'
 import Image from 'next/image'
 
+
 type MenuProps = {
   currentUser: User | null
 }
@@ -35,6 +36,7 @@ const Menu: React.FC<MenuProps> = ({ currentUser }) => {
           alt="avatar"
           fill
         />
+        
       </div>
 
       {isOpen && (
@@ -55,7 +57,9 @@ const Menu: React.FC<MenuProps> = ({ currentUser }) => {
                     signOut()
                     setIsOpen(false)
                   }}
+                
                 />
+                
               </>
             ) : (
               <>
