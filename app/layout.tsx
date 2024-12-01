@@ -6,6 +6,7 @@ import ToasterContext from "@/app/context/ToasterContext";
 import SignupModal from "@/app/components/modals/SignupModal";
 import LoginModal from "@/app/components/modals/LoginModal";
 import ProfileModal from "@/app/components/modals/ProfileModal";
+
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { Inter } from "next/font/google";
 
