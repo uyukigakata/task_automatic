@@ -8,21 +8,22 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(uuid())
+  id             String         @id @default(uuid())
   name           String?
-  email          String?         @unique
+  email          String?        @unique
   emailVerified  DateTime?
-  image          String? 
+  image          String?
   hashedPassword String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   accounts       Account[]
+  Notification   Notification[]
   sessions       Session[]
   todos          Todo[]
 }
 
 model Account {
-  id                String        @id @default(uuid())
+  id                String   @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -59,15 +60,34 @@ model VerificationToken {
 }
 
 model Todo {
-  id         String    @id @default(uuid())
-  title      String
-  details    String?
-  date       DateTime
-  startTime  DateTime?
-  endTime    DateTime?
-  isComplete Boolean   @default(false)
-  userId     String?
-  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id               String    @id @default(uuid())
+  title            String
+  details          String?
+  date             DateTime
+  startTime        DateTime?
+  endTime          DateTime?
+  isComplete       Boolean   @default(false)
+  userId           String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  notificationTime DateTime?
+  user             User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  userId    String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NotificationSubscription {
+  id        Int      @id @default(autoincrement())
+  endpoint  String
+  auth      String
+  createdAt DateTime @default(now())
+  p256dh    String
 }
