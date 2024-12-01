@@ -159,19 +159,18 @@ export default function TodoPage() {
                                         left: left,
                                         width: width,
                                     }}
-                                    onClick={() => setSelectedTodo(todo)}
+                                    onClick={() => setSelectedTodo(todo)} // タスクをクリックしてモーダル表示
                                 >
                                     <div className="flex justify-between items-center">
-                                        <div className="font-bold">
-                                            {todo.title}
-                                        </div>
+                                        <div className="font-bold">{todo.title}</div>
                                         <div className="relative ml-2">
                                             <input
                                                 type="checkbox"
                                                 checked={todo.isComplete}
-                                                onChange={(e) =>
-                                                    toggleComplete(todo.id, e.target.checked)
-                                                }
+                                                onChange={(e) => {
+                                                    toggleComplete(todo.id, e.target.checked);
+                                                }}
+                                                onClick={(e) => e.stopPropagation()} // イベント伝播を防ぐ
                                                 className="w-6 h-6 cursor-pointer appearance-none border-2 border-gray-400 rounded-md checked:bg-blue-500 checked:border-blue-500 transition duration-200 ease-in-out"
                                             />
                                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
